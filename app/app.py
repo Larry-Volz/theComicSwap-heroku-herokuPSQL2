@@ -1,5 +1,5 @@
 # import datetime
-from flask import Flask, request, render_template, redirect, flash, session
+from flask import Flask, request, render_template, redirect, flash, session, jsonify, url_for
 # from flask_debugtoolbar import DebugToolbarExtension
 # from flask_uploads import configure_uploads, IMAGES, UploadSet
 # import forms
@@ -32,8 +32,8 @@ app=Flask(__name__)
 
 # original local postgresql db
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1@localhost:5432/comicswap2'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://nxsuiahlyozoku:6d41d310884c8b9761fdc9ffe5d06828e1d994fdc3e7b4da0651a536fc7b8150@ec2-3-229-252-6.compute-1.amazonaws.com:5432/d4g4724dllglc5'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1@localhost:5432/comicswap2'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://otdzzkrfbkchsb:cdf7b1337eb9d8ab1e5915aec18b3f1f28df557d07f23f389e05482273be00f4@ec2-34-234-240-121.compute-1.amazonaws.com:5432/dbe4gdcqdj4te7'
 
 #secure variables
 #At ElephantSQL
@@ -252,13 +252,14 @@ def editcomic(id):
 @app.route('/search', methods=["GET"])
 def search():
     """ Search page - should default to most popular titles available, and be able to search books by title, date range, pedigree, condition, price range..."""
-
+    
     #TODO: TEMPORARY - UPDATE WITH USER FROM LOGIN
     session['current_user']=1
     current_user = session['current_user']
 
     #query all comics EXCEPT this user
     comics = Comic.query.filter(Comic.owner_id != current_user)
+    
 
  
     return render_template("search.html", comics=comics)
