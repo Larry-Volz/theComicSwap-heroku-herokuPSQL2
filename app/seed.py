@@ -113,6 +113,8 @@ with app.app_context():
 
     comic6 = Comic(owner_id=2, title="Action Comics featuring Superman", issue_num=419, cgc_grade=9.0,assessed_value=6.0, assessed_source="CGC", thumbnail="../static/images/superman-p-250.jpg", cover_pic="../static/images/superman-p-1080.jpg", back_cover_pic="", extra_media="", publisher="Marvel", month="August", year=1972, notes="First appearance of Spider-Man", signed=False, pedigree=5, location=0)
 
+    comic7 = Comic(owner_id=2, title="Iron Man", issue_num=126, cgc_grade=9.1,assessed_value=105.0, assessed_source="CGC", thumbnail="../static/images/iron_man-p-250.webp", cover_pic="../static/images/iron_man.webp", back_cover_pic="", extra_media="", publisher="Marvel", month="August", year=1972, notes="First appearance of Spider-Man", signed=False, pedigree=5, location=0)
+
 # Add new messages to session, so they'll persist
 
     db.session.add(comic1)
@@ -121,6 +123,7 @@ with app.app_context():
     db.session.add(comic4)
     db.session.add(comic5)
     db.session.add(comic6)
+    db.session.add(comic7)
 
 
 # Commit--otherwise, this never gets saved!
