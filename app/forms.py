@@ -67,4 +67,28 @@ class SubscriptionForm(FlaskForm):
     password = StringField("Password", 
         validators = [InputRequired(message = "cannot be blank")])
 
+    fname = StringField("First Name", 
+        validators = [InputRequired(message = "cannot be blank")])
+    
+    lname = StringField("Last Name", 
+        validators = [InputRequired(message = "cannot be blank")])
+
+    fname = StringField("First Name", 
+        validators = [InputRequired(message = "cannot be blank")])
+
+    address = StringField("Address", 
+        validators = [Optional()])
+
+    address2 = StringField("Address 2", 
+        validators = [Optional()])
+
+    city = StringField("City", 
+        validators = [Optional()])
+
+    State = StringField("State", 
+        validators = [Optional()])
+
+    Zip = StringField("Address", 
+        validators = [Optional()])
+
     
