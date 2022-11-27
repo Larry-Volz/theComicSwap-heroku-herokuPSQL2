@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, DateField, DateTimeField, IntegerField, StringField, TextAreaField, BooleanField
+from wtforms import StringField, FloatField, DateField, DateTimeField, IntegerField, StringField, TextAreaField, BooleanField, PasswordField
 from wtforms.validators import InputRequired, Optional, Email, NumberRange, AnyOf, URL
 
 class EditComicsForm(FlaskForm):
@@ -37,8 +37,7 @@ class EditComicsForm(FlaskForm):
         validators = [InputRequired(message = "cannot be blank")])
 
 
-
-
+#-----------------------------------------------------------------------
 
 
     # yes_no = BooleanField("y/n") 
@@ -55,25 +54,23 @@ class EditComicsForm(FlaskForm):
     # dept_code = SelectField("Department Code")
     # choice-tuples added later from postgresql
 
+#-----------------------------------------------------------------------
 
 class SubscriptionForm(FlaskForm):
     
     username = StringField("User Name", 
         validators = [InputRequired(message = "cannot be blank")])
     
-    email = StringField("Email", 
-        validators = [Optional(), Email()])
+    email = StringField("email", 
+        validators=[InputRequired()])
 
-    password = StringField("Password", 
+    password = PasswordField("Password", 
         validators = [InputRequired(message = "cannot be blank")])
 
     fname = StringField("First Name", 
         validators = [InputRequired(message = "cannot be blank")])
     
     lname = StringField("Last Name", 
-        validators = [InputRequired(message = "cannot be blank")])
-
-    fname = StringField("First Name", 
         validators = [InputRequired(message = "cannot be blank")])
 
     address = StringField("Address", 
@@ -85,10 +82,20 @@ class SubscriptionForm(FlaskForm):
     city = StringField("City", 
         validators = [Optional()])
 
-    State = StringField("State", 
+    state = StringField("State", 
         validators = [Optional()])
 
-    Zip = StringField("Address", 
+    zip = StringField("Address", 
+        validators = [Optional()])
+
+    mailinglist = BooleanField("Subscribe to our mailing list",         
         validators = [Optional()])
 
     
+# -----------------------------------------------------------------------
+
+class LoginForm(FlaskForm):
+    """Form for registering a user."""
+
+    email = StringField("email", validators=[InputRequired()])
+    password = PasswordField("Password", validators=[InputRequired(message = "cannot be blank")])

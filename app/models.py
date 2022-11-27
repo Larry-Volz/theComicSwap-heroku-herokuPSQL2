@@ -2,17 +2,66 @@ from uuid import UUID
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+from flask_bcrypt import Bcrypt
+
 
 db=SQLAlchemy()
+
+bcrypt = Bcrypt() 
+
 
 def connect_db(app):
     db.app = app 
     db.init_app(app)
 
+#################### Registration/Authentication ######################
+
+# start_register
+    @classmethod
+    def register(cls, username, email, pwd, fname, lname, address, address2, city, state, zip, mailinglist):
+        """Register user w/hashed password & return user."""
+
+        hashed = bcrypt.generate_password_hash(pwd)
+        # turn bytestring into normal (unicode utf8) string
+        hashed_utf8 = hashed.decode("utf8")
+
+        # return instance of user w/email and hashed pwd - CHANGED THIS
+        return cls(
+            username=username, 
+            email = email, 
+            fname = fname, 
+            lname = lname, 
+            address = address, 
+            address2 = address2, 
+            city = city, 
+            state = state, 
+            zip = zip, 
+            mailinglist=mailinglist,
+            password = hashed_utf8)
+
+    # end_register
+
+    # start_authenticate
+    @classmethod
+    def authenticate(cls, email, pwd):
+        """Validate that user exists & password is correct.
+
+        Return user if valid; else return False.
+        """
+
+        u = User.query.filter_by(email=email).first()
+
+        if u and bcrypt.check_password_hash(u.password, pwd):
+            # return user instance
+            return u
+        else:
+            return False
+    # end_authenticate    
+
 
 #MODELS 
 
-############################# ARTICLES (optional/later) #############################
+###################### ARTICLES (optional/later) ########################
 
 # title - text
 #content - rich text
@@ -20,17 +69,17 @@ def connect_db(app):
 # relation to user
 
 
-############################ TAGS (optional/later) #################################
+#################### TAGS (optional/later) #########################
 # tag name
 # id
 
-#############################tags-articles (optional/later) ########################
+################### tags-articles (optional/later) #################
 # id
 # tagId
 # ArticleId
 
 
-############################# COMICS ######################################
+####################### COMICS #################################
 
 class Comic(db.Model):
 
@@ -94,7 +143,7 @@ class Comic(db.Model):
             return f"<Message id={p.id} to_id={p.to_id} from_id={p.from_id} subject={p.subject} content={p.content} read={p.read} attachments={p.attachments}>"
 
 
-############################# DEALS ####################################
+############################# DEALS #################################
 
 class Deal(db.Model):
     __tablename__ =  "deals"
@@ -135,7 +184,7 @@ class Deal(db.Model):
     comic_condition = db.Column(db.Integer)
 
 
-############################# OFFERS ####################################
+############################# OFFERS ###############################
 
 class Offer(db.Model):
     __tablename__ =  "offers"
@@ -227,19 +276,20 @@ class User(db.Model):
     nullable=False,
     unique=True)
 
+    email = db.Column(db.String(50),
+    unique=True,
+    nullable = False)
+    
+    password = db.Column(db.Text(50),
+    unique=True,
+    nullable = False)
+
     fname = db.Column(db.String(50),
     nullable = False)
 
     lname = db.Column(db.String(50),
     nullable = False)
 
-    email = db.Column(db.String(50),
-    unique=True,
-    nullable = False)
-
-    password = db.Column(db.String(50),
-    unique=True,
-    nullable = False)
 
     confirmation_token = db.Column(db.String(50))
 
@@ -247,9 +297,6 @@ class User(db.Model):
     default=False)
 
     blocked = db.Column(db.Boolean, 
-    default=False)
-
-    mailinglist = db.Column(db.Boolean,
     default=False)
 
     #TODO: optional: relate to a separate roles table
@@ -266,6 +313,8 @@ class User(db.Model):
     state = db.Column(db.String(22))
 
     zip = db.Column(db.String(20))
+    
+    mailinglist = db.Column(db.Boolean,default=True)
 
     @classmethod
     def get_all_users(cls):

@@ -67,11 +67,12 @@ connect_db(app)
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+# TODO: PUT THIS ELSEWHERE/ENVIRONMENTAL VARIABLE
 WTF_CSRF_SECRET_KEY = 'magic'
 
 
 
-strapi_url = "http://localhost:1337/api"
+# strapi_url = "http://localhost:1337/api"
 
 # @app.route("/http://localhost:1337/api/articles?populate=*", methods=["GET"])
 # def getArticles():
@@ -101,18 +102,68 @@ def home():
 
 ############################# LOGIN/REGISTER ################################
 
+@app.route("/subscribe", methods=["GET", "POST"])
+def register():
+    """Register user: produce form & handle form submission."""
+
+    # Set up email WTForm validation (route, Model, SubscriptionForm, subscribe.html)
+
+    #Client clicks 'subscribe' on button only index.html  
+    # goes to subscribe.html -> form takes username, e-mail, password (twice) POSTs to /addUser route
+    # /addUser route 
+        # does form validation
+            # if valid
+                # create password
+                # add user/password to db through sqlalchemy
+                # e-mail welcome note - API to Mailchimp?
+                # 
+            # else throw error?  
+        # flashes "welcome" and goes to search/main books page
+
+    form = SubscriptionForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        pwd = form.password.data 
+
+        fname = form.fname.data
+        lname = form.lname.data
+
+        address = form.address.data
+        address2 = form.address2.data
+
+        city = form.city.data
+        state = form.state.data
+
+        # Note: zip is capitalized!
+        zip = form.zip.data  
+        mailinglist = form.mailinglist.data
+
+
+        # Changed this
+        user = User.register(username, email, pwd, fname, lname, address, address2, city, state, zip, mailinglist)
+
+        db.session.add(user)
+        db.session.commit()
+
+        session["user_id"] = user.id
+
+        flash(f"Registration successful for  { user.fname user.lname } ")
+
+        # on successful login, redirect to main page
+        return redirect("/")
+
+    else:
+        return render_template("subscribe.html", form=form) 
+
+
 @app.route('/login', methods=["GET"])
 def login():
     """ login page - should have a form, check the data, and pass along - use sessions to maintain login for ___ hours..."""
 
     return render_template("login.html")
 
-@app.route('/register', methods=["GET"])
-def register():
-    """ register page - should have a form, check the data, and pass along - use sessions to maintain login for ___ hours..."""
-
- 
-    return render_template("register.html")
 
 
 ################################################################################
@@ -382,29 +433,6 @@ def deletemsg():
     return render_template("deletemsg.html")
 
 
-######################### MAILING LIST ####################################
-
-@app.route('/subscribe', methods=["GET"])
-def subscribe():
-    """ write an email page - should show form to create an e-mail and send"""
- 
-# Set up email WTForm validation (route, Model, SubscriptionForm, subscribe.html)
-
-#Client clicks 'subscribe' on button only index.html  
-# goes to subscribe.html -> form takes username, e-mail, password (twice) POSTs to /addUser route
-# /addUser route 
-    # does form validation
-        # if valid
-            # create password
-            # add user/password to db through sqlalchemy
-            # e-mail welcome note - API to Mailchimp?
-            # 
-        # else throw error?  
-    # flashes "welcome" and goes to search/main books page
-
-
-
-    return render_template("subscribe.html")
 
 ########################### TRADING #########################################
 
