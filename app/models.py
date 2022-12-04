@@ -17,46 +17,46 @@ def connect_db(app):
 #################### Registration/Authentication ######################
 
 # start_register
-    @classmethod
-    def register(cls, username, email, pwd, fname, lname, address, address2, city, state, zip, mailinglist):
-        """Register user w/hashed password & return user."""
+@classmethod
+def register(cls, username, email, pwd, fname, lname, address, address2, city, state, zip, mailinglist):
+    """Register user w/hashed password & return user."""
 
-        hashed = bcrypt.generate_password_hash(pwd)
-        # turn bytestring into normal (unicode utf8) string
-        hashed_utf8 = hashed.decode("utf8")
+    hashed = bcrypt.generate_password_hash(pwd)
+    # turn bytestring into normal (unicode utf8) string
+    hashed_utf8 = hashed.decode("utf8")
 
-        # return instance of user w/email and hashed pwd - CHANGED THIS
-        return cls(
-            username=username, 
-            email = email, 
-            fname = fname, 
-            lname = lname, 
-            address = address, 
-            address2 = address2, 
-            city = city, 
-            state = state, 
-            zip = zip, 
-            mailinglist=mailinglist,
-            password = hashed_utf8)
+    # return instance of user w/email and hashed pwd - CHANGED THIS
+    return cls(
+        username=username, 
+        email = email, 
+        fname = fname, 
+        lname = lname, 
+        address = address, 
+        address2 = address2, 
+        city = city, 
+        state = state, 
+        zip = zip, 
+        mailinglist=mailinglist,
+        password = hashed_utf8)
 
-    # end_register
+# end_register
 
-    # start_authenticate
-    @classmethod
-    def authenticate(cls, email, pwd):
-        """Validate that user exists & password is correct.
+# start_authenticate
+@classmethod
+def authenticate(cls, email, pwd):
+    """Validate that user exists & password is correct.
 
-        Return user if valid; else return False.
-        """
+    Return user if valid; else return False.
+    """
 
-        u = User.query.filter_by(email=email).first()
+    u = User.query.filter_by(email=email).first()
 
-        if u and bcrypt.check_password_hash(u.password, pwd):
-            # return user instance
-            return u
-        else:
-            return False
-    # end_authenticate    
+    if u and bcrypt.check_password_hash(u.password, pwd):
+        # return user instance
+        return u
+    else:
+        return False
+# end_authenticate    
 
 
 #MODELS 

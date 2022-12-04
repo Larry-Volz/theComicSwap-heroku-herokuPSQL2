@@ -100,7 +100,7 @@ def home():
     return render_template("index.html")
 
 
-############################# LOGIN/REGISTER ################################
+##################### LOGIN/REGISTER #########################
 
 @app.route("/subscribe", methods=["GET", "POST"])
 def register():
@@ -118,44 +118,48 @@ def register():
                 # e-mail welcome note - API to Mailchimp?
                 # 
             # else throw error?  
-        # flashes "welcome" and goes to search/main books page
 
     form = SubscriptionForm()
 
-    if form.validate_on_submit():
-        username = form.username.data
-        email = form.email.data
-        pwd = form.password.data 
+    # if form.validate_on_submit():
+    #     username = form.username.data
+    #     email = form.email.data
+    #     pwd = form.password.data 
 
-        fname = form.fname.data
-        lname = form.lname.data
+    #     fname = form.fname.data
+    #     lname = form.lname.data
 
-        address = form.address.data
-        address2 = form.address2.data
+    #     address = form.address.data
+    #     address2 = form.address2.data
 
-        city = form.city.data
-        state = form.state.data
+    #     city = form.city.data
+    #     state = form.state.data
 
-        # Note: zip is capitalized!
-        zip = form.zip.data  
-        mailinglist = form.mailinglist.data
+    #     # Note: zip is capitalized!
+    #     zip = form.zip.data  
+    #     mailinglist = form.mailinglist.data
 
 
-        # Changed this
-        user = User.register(username, email, pwd, fname, lname, address, address2, city, state, zip, mailinglist)
+    #     # Create user object
+    #     user = User.register(username, email, pwd, fname, lname, address, address2, city, state, zip, mailinglist)
 
-        db.session.add(user)
-        db.session.commit()
+    #     db.session.add(user)
+    #     db.session.commit()
 
-        session["user_id"] = user.id
+    #     session["user_id"] = user.id
 
-        flash(f"Registration successful for  { user.fname user.lname } ")
 
-        # on successful login, redirect to main page
-        return redirect("/")
+    #     # on successful login, redirect to main page
 
-    else:
-        return render_template("subscribe.html", form=form) 
+    #     flash(f"Registration successful for  { user.fname user.lname } ")
+
+    #     return redirect("/")
+
+    # else:
+    #     return render_template("subscribe.html", form=form) 
+
+
+    return render_template("subscribe.html")
 
 
 @app.route('/login', methods=["GET"])
