@@ -1,5 +1,5 @@
 # import datetime
-from flask import Flask, request, render_template, redirect, flash, session
+from flask import Flask, request, render_template, redirect, flash, session, jsonify, url_for
 # from flask_debugtoolbar import DebugToolbarExtension
 # from flask_uploads import configure_uploads, IMAGES, UploadSet
 # import forms
@@ -13,8 +13,8 @@ from os import getenv
 
 from forms import EditComicsForm, SubscriptionForm
 # from date_and_time_functions import *
-
-# from CRUD_psql import * 
+  
+# from CRUD_psql import *  
 
 #TODO: TEMPORARY - ***** move these to environment variables and put in heroku *****
 from my_secrets import API_SECRET_KEY
@@ -33,7 +33,7 @@ app=Flask(__name__)
 # original local postgresql db
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1@localhost:5432/comicswap2'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://nxsuiahlyozoku:6d41d310884c8b9761fdc9ffe5d06828e1d994fdc3e7b4da0651a536fc7b8150@ec2-3-229-252-6.compute-1.amazonaws.com:5432/d4g4724dllglc5'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://uvgrreoopymgjw:c181bf3268e4ce43a86a6664c94a76fa8002d592668d42dd7a529aac0d95f648@ec2-54-174-31-7.compute-1.amazonaws.com:5432/d8ls7tuqeogn93'
 
 #secure variables
 #At ElephantSQL
@@ -67,11 +67,12 @@ connect_db(app)
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+# TODO: PUT THIS ELSEWHERE/ENVIRONMENTAL VARIABLE
 WTF_CSRF_SECRET_KEY = 'magic'
 
 
 
-strapi_url = "http://localhost:1337/api"
+# strapi_url = "http://localhost:1337/api"
 
 # @app.route("/http://localhost:1337/api/articles?populate=*", methods=["GET"])
 # def getArticles():
@@ -99,7 +100,67 @@ def home():
     return render_template("index.html")
 
 
-############################# LOGIN/REGISTER ################################
+##################### LOGIN/REGISTER #########################
+
+@app.route("/subscribe", methods=["GET", "POST"])
+def register():
+    """Register user: produce form & handle form submission."""
+
+    # Set up email WTForm validation (route, Model, SubscriptionForm, subscribe.html)
+
+    #Client clicks 'subscribe' on button only index.html  
+    # goes to subscribe.html -> form takes username, e-mail, password (twice) POSTs to /addUser route
+    # /addUser route 
+        # does form validation
+            # if valid
+                # create password
+                # add user/password to db through sqlalchemy
+                # e-mail welcome note - API to Mailchimp?
+                # 
+            # else throw error?  
+
+    form = SubscriptionForm()
+
+    # if form.validate_on_submit():
+    #     username = form.username.data
+    #     email = form.email.data
+    #     pwd = form.password.data 
+
+    #     fname = form.fname.data
+    #     lname = form.lname.data
+
+    #     address = form.address.data
+    #     address2 = form.address2.data
+
+    #     city = form.city.data
+    #     state = form.state.data
+
+    #     # Note: zip is capitalized!
+    #     zip = form.zip.data  
+    #     mailinglist = form.mailinglist.data
+
+
+    #     # Create user object
+    #     user = User.register(username, email, pwd, fname, lname, address, address2, city, state, zip, mailinglist)
+
+    #     db.session.add(user)
+    #     db.session.commit()
+
+    #     session["user_id"] = user.id
+
+
+    #     # on successful login, redirect to main page
+
+    #     flash(f"Registration successful for  { user.fname user.lname } ")
+
+    #     return redirect("/")
+
+    # else:
+    #     return render_template("subscribe.html", form=form) 
+
+
+    return render_template("subscribe.html")
+
 
 @app.route('/login', methods=["GET"])
 def login():
@@ -107,12 +168,6 @@ def login():
 
     return render_template("login.html")
 
-@app.route('/register', methods=["GET"])
-def register():
-    """ register page - should have a form, check the data, and pass along - use sessions to maintain login for ___ hours..."""
-
- 
-    return render_template("register.html")
 
 
 ################################################################################
@@ -252,13 +307,14 @@ def editcomic(id):
 @app.route('/search', methods=["GET"])
 def search():
     """ Search page - should default to most popular titles available, and be able to search books by title, date range, pedigree, condition, price range..."""
-
+    
     #TODO: TEMPORARY - UPDATE WITH USER FROM LOGIN
     session['current_user']=1
     current_user = session['current_user']
 
     #query all comics EXCEPT this user
     comics = Comic.query.filter(Comic.owner_id != current_user)
+    
 
  
     return render_template("search.html", comics=comics)
@@ -381,29 +437,6 @@ def deletemsg():
     return render_template("deletemsg.html")
 
 
-######################### MAILING LIST ####################################
-
-@app.route('/subscribe', methods=["GET"])
-def subscribe():
-    """ write an email page - should show form to create an e-mail and send"""
- 
-# Set up email WTForm validation (route, Model, SubscriptionForm, subscribe.html)
-
-#Client clicks 'subscribe' on button only index.html  
-# goes to subscribe.html -> form takes username, e-mail, password (twice) POSTs to /addUser route
-# /addUser route 
-    # does form validation
-        # if valid
-            # create password
-            # add user/password to db through sqlalchemy
-            # e-mail welcome note - API to Mailchimp?
-            # 
-        # else throw error?  
-    # flashes "welcome" and goes to search/main books page
-
-
-
-    return render_template("subscribe.html")
 
 ########################### TRADING #########################################
 

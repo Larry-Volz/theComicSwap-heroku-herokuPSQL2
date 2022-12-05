@@ -204,6 +204,19 @@ h3 {
   width: 100%;
 }
 
+.state-drop-down option{
+  background-color: black;
+}
+
+#state {
+  border-color: white !important;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 2%;
+}
+
+
+
 /* .wtfnotes {
   height: 150px;
   text-align: top;
