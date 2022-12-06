@@ -121,42 +121,42 @@ def register():
 
     form = SubscriptionForm()
 
-    # if form.validate_on_submit():
-    #     username = form.username.data
-    #     email = form.email.data
-    #     pwd = form.password.data 
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        pwd = form.password.data 
 
-    #     fname = form.fname.data
-    #     lname = form.lname.data
+        fname = form.fname.data
+        lname = form.lname.data
 
-    #     address = form.address.data
-    #     address2 = form.address2.data
+        address = form.address.data
+        address2 = form.address2.data
 
-    #     city = form.city.data
-    #     state = form.state.data
+        city = form.city.data
+        state = form.state.data
 
-    #     # Note: zip is capitalized!
-    #     zip = form.zip.data  
-    #     mailinglist = form.mailinglist.data
-
-
-    #     # Create user object
-    #     user = User.register(username, email, pwd, fname, lname, address, address2, city, state, zip, mailinglist)
-
-    #     db.session.add(user)
-    #     db.session.commit()
-
-    #     session["user_id"] = user.id
+        # Note: zip is capitalized!
+        zip = form.zip.data  
+        mailinglist = form.mailinglist.data
 
 
-    #     # on successful login, redirect to main page
+        # Create user object
+        user = User.register(username, email, pwd, fname, lname, address, address2, city, state, zip, mailinglist)
 
-    #     flash(f"Registration successful for  { user.fname user.lname } ")
+        db.session.add(user)
+        db.session.commit()
 
-    #     return redirect("/")
+        session["user_id"] = user.id
 
-    # else:
-    #     return render_template("subscribe.html", form=form) 
+
+        # on successful login, redirect to main page
+
+        flash(f"Registration successful for  { user.fname user.lname } ")
+
+        return redirect("/")
+
+    else:
+        return render_template("subscribe.html", form=form) 
 
 
     return render_template("subscribe.html")
